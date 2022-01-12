@@ -1,0 +1,76 @@
+
+if(isset($_POST['readUser_replay'])){ ?>
+    <?php $sqli = "SELECT * FROM tbl_comments_reply  ORDER BY repla_id DESC"; 
+     $run = mysqli_query($con,$sqli);
+     $count= 1;
+     while($row = mysqli_fetch_array($run)){ ?>
+                 <div class="comnet_box2">
+                     <div class="coment_name">
+                         <h4>Admin</h4>
+                        <strong><?php echo $row['full_name']?></strong> <p><?php echo $row['replay_coment']?></p>
+                     </div>
+                       <div class="d-flex justify-content-end">
+                       <form action="" method="POST">
+                         <input type="hidden" name="comnt_use_id" value="<?php echo $result['repla_id']?>">
+                   </form>
+                  <!-- <button name="rplay_btn" class=" btn btn-sm btn-secondary border-0" onclick="get_user(<?php echo $row['repla_id']?>)">Reply</button>  -->
+                   </div> 
+                 </div>
+  
+   <?php  } } 
+  
+
+   //insert replay table tda
+   if(isset($_POST['hidden_user_id'])){
+      $hidden_user_id = $_POST['hidden_user_id']; 
+      $replay_coment = $_POST['replay_coment']; 
+     $sql = " UPDATE  tbl_comments SET replay_comments ='$replay_coment' WHERE cmnt_id ='$hidden_user_id')";
+     $run = mysqli_query($con,$sql);
+   }
+
+   
+  if(isset($_POST['deleteID'])){
+
+    $deleteid = $_POST['deleteID'];
+
+    $del = "DELETE FROM tbl_comments where cmnt_id = '$deleteid'";
+
+    $run = mysqli_query($con,$del);
+ }
+
+ $(document).ready(function(){
+    readUser_replay();
+   });
+
+
+
+   // post replay comment UPDATE =============
+  function post_r_comment(){
+    var replay_coment = $("#replay_coment").val();
+    var hidden_user_id = $("#hidden_user_id").val();
+      $.post("ajax-load.php",{
+        replay_coment : replay_coment,
+        hidden_user_id : hidden_user_id,
+
+        },function(data,status){
+          $('#update_user_model').modal("hide");
+          readUser();
+        });
+    
+    }
+
+
+     
+function readUser_replay(){
+    var readUser_replay = 'readUser_replay';
+    $.ajax({
+      url: "load_ajax.php",
+      type: "POST",
+      data: {readUser_replay : readUser_replay},
+      success:function(data,status){
+       $('#contant_replay').html(data);
+  
+      }
+    });
+    
+   }
